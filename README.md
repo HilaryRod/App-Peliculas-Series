@@ -38,5 +38,5 @@ Los usuarios pueden registrarse, iniciar sesión, ver sinopsis, imágenes y tít
 [Ver acuerdos de trabajo](./acuerdos_de_trabajo.md)
 ## ✨ Autores
 - Hilary Virginia Rodriguez Gonzalez
-- [Nombre 2]
+- Ana Laura Monroy López
 - [Nombre 3]
