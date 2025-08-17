@@ -39,4 +39,4 @@ Los usuarios pueden registrarse, iniciar sesión, ver sinopsis, imágenes y tít
 ## ✨ Autores
 - Hilary Virginia Rodriguez Gonzalez
 - Ana Laura Monroy López
-- [Nombre 3]
+- Karen Monserrat Rodríguez Luna
