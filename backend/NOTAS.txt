@@ -1,0 +1,8 @@
+Las carpetas las dividí de la siguiente forma:
+/controllers     → lógica de cada ruta
+/routes          → define los endpoints
+/models          → esquemas de MongoDB
+/utils           → funciones auxiliares (ej. validación, manejo de errores)
+/middleware       → autenticación, validación
+server.js        → punto de entrada
+.env             → variables sensibles
