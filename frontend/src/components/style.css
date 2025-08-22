@@ -86,3 +86,9 @@ input::placeholder {
   margin-left: auto;
   margin-right: auto;  /* lo centra dentro del container */
 }
+
+.error {
+  color: #ff7a7a;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
