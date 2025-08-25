@@ -13,11 +13,13 @@ function Register() {
   } = useForm();
 
   const [apiError, setApiError] = React.useState("");
+  const [apiSuccess, setApiSuccess] = React.useState("");
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       setApiError("");
+      setApiSuccess("");
 
       const response = await fetch("/auth/register", {
         method: "POST",
@@ -26,13 +28,11 @@ function Register() {
       });
 
       const result = await response.json();
-
       if (!response.ok) throw new Error(result.message || "Error en el registro ❌");
 
-      console.log("Respuesta del backend:", result);
-      navigate("/login"); // Redirige al login
+      setApiSuccess("✅ Usuario registrado, redirigiendo...");
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
-      console.error("Error:", error);
       setApiError(error.message || "No se pudo conectar al servidor 🚨");
     }
   };
@@ -46,13 +46,7 @@ function Register() {
         <input
           type="text"
           placeholder="Nombre completo"
-          {...register("nombre", {
-            required: "El nombre es obligatorio",
-            maxLength: {
-              value: 50,
-              message: "El nombre no puede tener más de 50 caracteres",
-            },
-          })}
+          {...register("nombre", { required: "El nombre es obligatorio" })}
         />
         {errors.nombre && <p className="error">{errors.nombre.message}</p>}
 
@@ -76,7 +70,11 @@ function Register() {
             required: "La contraseña es obligatoria",
             minLength: {
               value: 6,
-              message: "La contraseña debe tener al menos 6 caracteres",
+              message: "Debe tener al menos 6 caracteres",
+            },
+            pattern: {
+              value: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+              message: "Debe incluir mayúscula, número y símbolo",
             },
           })}
         />
@@ -100,6 +98,7 @@ function Register() {
       </form>
 
       {apiError && <p className="error">{apiError}</p>}
+      {apiSuccess && <p className="success">{apiSuccess}</p>}
 
       <p className="aux">
         ¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link>
@@ -109,4 +108,5 @@ function Register() {
 }
 
 export default Register;
+
 

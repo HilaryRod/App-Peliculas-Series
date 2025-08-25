@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import "./style.css"; // estilos compartidos
+import "./style.css";
 import logo from "../assets/logo.png";
 
 function Login() {
@@ -12,14 +12,14 @@ function Login() {
   } = useForm();
 
   const [apiError, setApiError] = React.useState("");
+  const [apiSuccess, setApiSuccess] = React.useState("");
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       setApiError("");
-      console.log("Datos de login:", data);
+      setApiSuccess("");
 
-      // Petición al backend
       const res = await fetch("/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -27,16 +27,12 @@ function Login() {
       });
 
       const result = await res.json();
-
       if (!res.ok) throw new Error(result.message || "Error en el login ❌");
 
-      // Guardar token en localStorage
       localStorage.setItem("token", result.token);
-
-      // Redirigir a home (ajusta si quieres otra ruta)
-      navigate("/home");
+      setApiSuccess("✅ Login exitoso, redirigiendo...");
+      setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
-      console.error("Error:", err);
       setApiError(err.message || "No se pudo conectar al servidor 🚨");
     }
   };
@@ -50,23 +46,36 @@ function Login() {
         <input
           type="email"
           placeholder="Correo electrónico"
-          {...register("email", { required: "El correo es obligatorio" })}
+          {...register("email", {
+            required: "El correo es obligatorio",
+            pattern: {
+              value: /^[^@]+@[^@]+\.[^@]+$/,
+              message: "El correo no es válido",
+            },
+          })}
         />
         {errors.email && <p className="error">{errors.email.message}</p>}
 
         <input
           type="password"
           placeholder="Contraseña"
-          {...register("password", { required: "La contraseña es obligatoria" })}
+          {...register("password", {
+            required: "La contraseña es obligatoria",
+            minLength: {
+              value: 6,
+              message: "Debe tener al menos 6 caracteres",
+            },
+          })}
         />
         {errors.password && <p className="error">{errors.password.message}</p>}
 
         <button type="submit" className="btn" disabled={isSubmitting}>
-          {isSubmitting ? "Enviando..." : "Entrar"}
+          {isSubmitting ? "Validando..." : "Entrar"}
         </button>
       </form>
 
       {apiError && <p className="error">{apiError}</p>}
+      {apiSuccess && <p className="success">{apiSuccess}</p>}
 
       <p className="aux">
         ¿No tienes cuenta? <Link to="/register">Regístrate aquí</Link>
