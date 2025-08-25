@@ -9,6 +9,7 @@ function Register() {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -20,8 +21,8 @@ function Register() {
     try {
       setApiError("");
       setApiSuccess("");
-
-      const response = await fetch("/auth/register", {
+      //endpoint
+      const response = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -31,6 +32,7 @@ function Register() {
       if (!response.ok) throw new Error(result.message || "Error en el registro ❌");
 
       setApiSuccess("✅ Usuario registrado, redirigiendo...");
+      reset();//Para limpiar formulario
       setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
       setApiError(error.message || "No se pudo conectar al servidor 🚨");
