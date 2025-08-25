@@ -8,6 +8,7 @@ function Login() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -31,6 +32,7 @@ function Login() {
 
       localStorage.setItem("token", result.token);
       setApiSuccess("✅ Login exitoso, redirigiendo...");
+      reset(); //limpiar el formulario
       setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
       setApiError(err.message || "No se pudo conectar al servidor 🚨");
