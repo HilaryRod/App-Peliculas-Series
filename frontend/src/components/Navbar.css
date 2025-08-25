@@ -1,0 +1,78 @@
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(180deg, #f08f70, #879C90);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Contenedor del login */
+.login-container {
+  background-color: #525D53; /* color gris-verde de la tarjeta */
+  padding: 2rem;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* Logo */
+.login-container img {
+  width: 100px;
+  margin-bottom: 1rem;
+}
+
+/* Título */
+.login-container h2 {
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+/* Inputs */
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Botón de entrar */
+.login-container button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #7a121c; /* burdeos como en la imagen */
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-container button:hover {
+  background-color: #a21327;
+}
+
+/* Texto de registro */
+.login-container .register-text {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #ddd;
+}
+
+.login-container .register-text a {
+  color: #f08f70; /* color naranja del gradiente */
+  text-decoration: none;
+}
+
+.login-container .register-text a:hover {
+  text-decoration: underline;
+}
