@@ -8,6 +8,7 @@ function Login() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -20,7 +21,7 @@ function Login() {
       setApiError("");
       setApiSuccess("");
 
-      const res = await fetch("/auth/login", {
+      const res = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -31,6 +32,7 @@ function Login() {
 
       localStorage.setItem("token", result.token);
       setApiSuccess("✅ Login exitoso, redirigiendo...");
+      reset(); //limpiar el formulario
       setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
       setApiError(err.message || "No se pudo conectar al servidor 🚨");
