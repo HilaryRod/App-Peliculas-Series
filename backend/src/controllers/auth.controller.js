@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
 /* Prueba de que funciona */
-/* POST -> http://localhost:3000/api/register */
+/* POST -> http://localhost:3000/api/auth/register */
 export const register = async (req, res) => {
   const { email, password, username } = req.body
   try {
