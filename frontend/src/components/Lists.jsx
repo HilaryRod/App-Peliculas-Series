@@ -1,15 +1,13 @@
-import Navbar from "../components/Navbar";
 import MovieCard from "../components/MovieCard";
 
 function Lists() {
-  // Ejemplo: aquí luego conectas a tu backend o localStorage
+  // Backend o localStorage
   const myList = [
-    { id: 3, title: "The Matrix", year: 1999, poster: "https://via.placeholder.com/150" },
+    { id: 3, title: "The Matrix", year: 1999, poster: "https://play-lh.googleusercontent.com/JCgd2EG9UkbJE9n1bWuBwsvwVr81mS7Ad2ve0K35_w10rqOtRlm9OlPAuAENQXVmh3YpHDGJbsKiT5iaqL8" },
   ];
 
   return (
     <div>
-      <Navbar />
       <h2>Mis Listas</h2>
       {myList.length === 0 ? (
         <p>No tienes películas en tu lista 😢</p>

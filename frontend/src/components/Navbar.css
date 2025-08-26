@@ -1,78 +1,83 @@
-
-body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background: linear-gradient(180deg, #f08f70, #879C90);
+.navbar {
+  background-color: #525D53;
+  padding: 1.2rem 3rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  height: 100vh;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-/* Contenedor del login */
-.login-container {
-  background-color: #525D53; /* color gris-verde de la tarjeta */
-  padding: 2rem;
-  border-radius: 15px;
-  width: 350px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  text-align: center;
+.navbar .logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-/* Logo */
-.login-container img {
-  width: 100px;
-  margin-bottom: 1rem;
+.navbar .logo {
+  width: 50px;
+  height: auto;
 }
 
-/* Título */
-.login-container h2 {
+.navbar h1 {
+  margin: 0;
   color: #fff;
-  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
 
-/* Inputs */
-.login-container input[type="email"],
-.login-container input[type="password"] {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  outline: none;
-  box-sizing: border-box;
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2.5rem;
 }
 
-/* Botón de entrar */
-.login-container button {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 8px;
-  background-color: #7a121c; /* burdeos como en la imagen */
+.nav-links a {
   color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.login-container button:hover {
-  background-color: #a21327;
-}
-
-/* Texto de registro */
-.login-container .register-text {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #ddd;
-}
-
-.login-container .register-text a {
-  color: #f08f70; /* color naranja del gradiente */
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
-.login-container .register-text a:hover {
-  text-decoration: underline;
+.nav-links a:hover {
+  color: #F6A9A1;
+  transform: translateY(-2px);
+}
+
+.nav-links a.active {
+  color: #F6A9A1;
+}
+
+
+/* Responsive */
+@media (max-width: 900px) {
+  .navbar {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+  
+  .navbar .logo-container {
+    margin-bottom: 1rem;
+  }
+  
+  .nav-links {
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar h1 {
+    font-size: 2rem;
+  }
+  
+  .nav-links a {
+    font-size: 1.1rem;
+  }
 }

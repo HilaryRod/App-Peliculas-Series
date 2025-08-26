@@ -1,18 +1,47 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import logo from "../assets/logo.png";
-
 import "./Navbar.css";
 
 function Navbar() {
   return (
     <nav className="navbar">
-     <img src={logo} alt="Logo" className="logo" />
-      <h1 className="logo">HAM</h1>
+      <div className="logo-container">
+        <img src={logo} alt="Logo" className="logo" />
+        <h1>HAM</h1>
+      </div>
       <ul className="nav-links">
-        <li><Link to="/Home">Inicio</Link></li>
-        <li><Link to="/Movies">Películas</Link></li>
-        <li><Link to="/Lists">Mis Listas</Link></li>
-        <li><Link to="/Profile">Perfil</Link></li>
+        <li>
+          <NavLink 
+            to="/" 
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Inicio
+          </NavLink>
+        </li>
+        <li>
+          <NavLink 
+            to="/movies" 
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Películas
+          </NavLink>
+        </li>
+        <li>
+          <NavLink 
+            to="/lists" 
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Mis Listas
+          </NavLink>
+        </li>
+        <li>
+          <NavLink 
+            to="/profile" 
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Perfil
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
