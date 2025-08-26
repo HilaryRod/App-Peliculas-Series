@@ -1,9 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import "./Login.css";
-import logo from "../assets/logo.png";
-
+import "./style.css";
 function Login() {
   const {
     register,
@@ -41,7 +39,7 @@ function Login() {
 
   return (
     <div className="container">
-      <img src={logo} alt="Logo" className="logo" />
+      <img src="/public/logo.png" alt="Logo" className = "logo" />
       <h2>Inicia sesión</h2>
 
       <form onSubmit={handleSubmit(onSubmit)}>

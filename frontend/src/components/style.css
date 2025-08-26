@@ -81,7 +81,7 @@ input::placeholder {
 }
 
 .logo {
-  width: 180px;        /* tamaño del logo */
+  width: 180px ;         /* tamaño del logo */
   margin-bottom: 20px; /* espacio debajo del logo */
   display: block;
   margin-left: auto;
