@@ -4,6 +4,7 @@ import cors from "cors"
 import {config} from "dotenv"
 import router from "./routes/index.js"
 import movieRoutes from "./routes/movie.routes.js"
+import authRoutes from "./routes/auth.routes.js"
 
 config()
 
@@ -16,6 +17,7 @@ app.use(cors())
 //Llamada a rutas
 app.use("/api", router)
 app.use("/api/movies", movieRoutes)
+app.use("/api/auth", authRoutes)
 
 /* Conectar Mongoose */
 mongoose.connect(process.env.MONGODB_KEY)
