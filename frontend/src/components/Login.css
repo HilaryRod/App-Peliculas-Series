@@ -1,17 +1,13 @@
-/* Estilos generales */
-body {
-  margin: 0;
-  font-family: 'Raleway', sans-serif;
-  background: linear-gradient(to bottom, #ffa07a 0%, #879C90 100%);
+
+.auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  color: #fff;
 }
 
 .container {
-  background: #525D53; /* verde musgo */
+  background: var(--primary);
   padding: 2.5rem 2rem;
   border-radius: 15px;
   width: 350px;
@@ -53,7 +49,7 @@ input::placeholder {
   margin-top: 1rem;
   border: none;
   border-radius: 6px;
-  background: #661218; /* rojo vino */
+  background: var(--danger);
   color: #fff;
   font-size: 1rem;
   font-weight: bold;
@@ -72,7 +68,7 @@ input::placeholder {
 }
 
 .aux a {
-  color: #F6A9A1;
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -81,11 +77,11 @@ input::placeholder {
 }
 
 .logo {
-  width: 180px ;         /* tamaño del logo */
-  margin-bottom: 20px; /* espacio debajo del logo */
+  width: 180px;
+  margin-bottom: 20px;
   display: block;
   margin-left: auto;
-  margin-right: auto;  /* lo centra dentro del container */
+  margin-right: auto;
 }
 
 .error {
