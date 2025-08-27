@@ -2,16 +2,18 @@
   background: #525D53 100%;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 0.5rem 2rem;
+  padding: 0.1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: 0;
   z-index: 1000;
   box-shadow: 0 0 20px rgba(0,0,0,0.4);
-  border-radius: 8px;
   border: 1px solid rgba(246, 169, 161, 0.15);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .logo-container {
@@ -52,8 +54,7 @@
 /* Responsive */
 @media (max-width: 900px) {
   .navbar {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+    padding: 0.1rem 1rem;
   }
 
   .logo {

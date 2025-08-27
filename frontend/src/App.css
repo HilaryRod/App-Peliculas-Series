@@ -1,8 +1,12 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
+}
+main {
+  margin-top: 80px; /* igual o mayor al alto de tu navbar */
+  padding: 2rem;
 }
 
 .logo {

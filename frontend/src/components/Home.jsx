@@ -17,7 +17,7 @@ function Home() {
   ];
 
   return (
-    <div>
+    <div className="page-container">
       <h2>Películas Populares</h2>
       <div className="movies-grid">
         {movies.map((m) => (
