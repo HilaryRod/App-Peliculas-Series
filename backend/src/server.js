@@ -5,6 +5,7 @@ import {config} from "dotenv"
 import router from "./routes/index.js"
 import movieRoutes from "./routes/movie.routes.js"
 import authRoutes from "./routes/auth.routes.js"
+import cookieParser from "cookie-parser"
 
 config()
 
@@ -13,6 +14,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser()) 
 
 //Llamada a rutas
 app.use("/api", router)
