@@ -19,14 +19,6 @@ function Navbar() {
         </li>
         <li>
           <NavLink 
-            to="/movies" 
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Películas
-          </NavLink>
-        </li>
-        <li>
-          <NavLink 
             to="/lists" 
             className={({ isActive }) => (isActive ? "active" : "")}
           >
