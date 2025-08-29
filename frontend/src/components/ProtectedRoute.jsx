@@ -1,15 +1,14 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-/**
- * Componente para proteger rutas.
- * Si no hay token, redirige a /login
- * Si hay token, renderiza los hijos
- */
-function ProtectedRoute({ token, children }) {
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Cargando...</div>; // opcional: spinner
+
+  if (!user) return <Navigate to="/login" replace />;
+
   return children;
-}
+};
 
 export default ProtectedRoute;

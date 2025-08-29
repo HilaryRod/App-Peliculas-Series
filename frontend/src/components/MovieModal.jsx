@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import StarRating from "./StarRating";
-import "./MovieModal.css";
+import "../styles/MovieModal.css";
 
 function MovieModal({ movie, token, onClose }) {
   const [userRating, setUserRating] = useState(0);

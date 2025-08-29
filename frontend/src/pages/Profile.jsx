@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Profile.css";
+import "../styles/Profile.css";
 
 function Profile({ token }) {
   const [userData, setUserData] = useState(null);

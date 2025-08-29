@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import logo from "../assets/logo.png";
-import "./style.css";
+import "../styles/style.css";
 
 function Register() {
   const {

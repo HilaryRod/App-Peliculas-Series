@@ -1,41 +1,32 @@
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useAuth, AuthProvider } from "../context/AuthContext";
 import logo from "../assets/logo.png";
-import "./Navbar.css";
+import "../styles/Navbar.css";
 
-function Navbar() {
+export const Navbar = () => {
+  const { user, logout } = useAuth();
+
   return (
     <nav className="navbar">
       <div className="logo-container">
-        <img src={logo} alt="Logo" className="logo" />
+        <Link to="/"><img src={logo} alt="Logo" className="logo" /></Link>
       </div>
+
       <ul className="nav-links">
-        <li>
-          <NavLink 
-            to="/" 
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Inicio
-          </NavLink>
-        </li>
-        <li>
-          <NavLink 
-            to="/lists" 
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Mis Listas
-          </NavLink>
-        </li>
-        <li>
-          <NavLink 
-            to="/profile" 
-            className={({ isActive }) => (isActive ? "active" : "")}
-          >
-            Perfil
-          </NavLink>
-        </li>
+        {user ? (
+          <>
+            <li><Link to="/" className="nav-link">Inicio</Link></li>
+            <li><Link to="/lists" className="nav-link">Mis Listas</Link></li>
+            <li><Link to="/perfil" className="nav-link">Perfil</Link></li>
+            <li><button className="logout-btn" onClick={logout}>Logout</button></li>
+          </>
+        ) : (
+          <>
+            <li><Link to="/login" className="nav-link">Login</Link></li>
+            <li><Link to="/register" className="nav-link">Registro</Link></li>
+          </>
+        )}
       </ul>
     </nav>
   );
-}
-
-export default Navbar;
+};

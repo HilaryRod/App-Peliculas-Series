@@ -1,88 +1,64 @@
 import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Navbar from "./components/Navbar";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import Home from "./components/Home";
+import { Navbar } from "./components/Navbar";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Lists from "./components/Lists";
-import Profile from "./components/Profile"; 
 import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext"; // 👈 envolvemos toda la app
 import "./App.css";
 
-// Layout con Navbar
-function Layout({ token }) {
+// Layout con Navbar y Outlet para las rutas internas
+function Layout() {
   return (
     <>
       <Navbar />
       <main>
-        <Outlet context={{ token }} />
+        <Outlet />
       </main>
     </>
   );
 }
 
 function App() {
-  const [token, setToken] = useState(null);
-
-  // Leer token al iniciar
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    if (savedToken) setToken(savedToken);
-  }, []);
-
   return (
-    <Router>
-      <Routes>
-        {/* Login */}
-        <Route path="/login" element={<Login setToken={setToken} />} />
-        {/* Register */}
-        <Route path="/register" element={<Register setToken={setToken} />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Rutas públicas */}
+          
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
+          {/* Rutas protegidas dentro del layout */}
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/lists"
+              element={
+                <ProtectedRoute>
+                  <Lists />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/perfil"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            {/* Redirigir /home a / */}
+          </Route>
 
-        <Route element={<Layout token={token} />}>
-          {/* Ruta protegida: "/" */}
-          {/* Home */}
-          <Route
-            index
-            element={
-              <ProtectedRoute token={token}>
-                <Home token={token}/>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/home"
-            element={
-              <ProtectedRoute token={token}>
-                <Home token={token}/>
-              </ProtectedRoute>
-            }
-          />
-          {/* Listas */}
-          <Route
-            path="/lists"
-            element={
-              <ProtectedRoute token={token}>
-                <Lists />
-              </ProtectedRoute>
-            }
-          />
-          {/* Perfil */}
-          {/*<Route
-            path="/perfil"
-            element={
-              <ProtectedRoute token={token}>
-                <Profile />
-              </ProtectedRoute>
-            }
-          /> */}
-        </Route>
-
-        {/* Página no encontrada */}
-        <Route path="*" element={<h1>Página no encontrada</h1>} />
-      </Routes>
-    </Router>
+          {/* Página no encontrada */}
+          <Route path="*" element={<h1>Página no encontrada</h1>} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
 export default App;
-

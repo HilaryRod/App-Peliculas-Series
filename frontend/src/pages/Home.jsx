@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MovieCard from "../components/MovieCard";
 import MovieModal from "../components/MovieModal";
-import "./Home.css";
+import "../styles/Home.css";
 
 
 function Home({ token }) {
