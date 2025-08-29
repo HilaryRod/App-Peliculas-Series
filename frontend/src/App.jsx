@@ -1,35 +1,88 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Navbar from "./components/Navbar";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Home from "./components/Home";
+import Lists from "./components/Lists";
+import Profile from "./components/Profile"; 
+import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+// Layout con Navbar
+function Layout({ token }) {
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Navbar />
+      <main>
+        <Outlet context={{ token }} />
+      </main>
     </>
-  )
+  );
 }
 
-export default App
+function App() {
+  const [token, setToken] = useState(null);
+
+  // Leer token al iniciar
+  useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    if (savedToken) setToken(savedToken);
+  }, []);
+
+  return (
+    <Router>
+      <Routes>
+        {/* Login */}
+        <Route path="/login" element={<Login setToken={setToken} />} />
+        {/* Register */}
+        <Route path="/register" element={<Register setToken={setToken} />} />
+
+        <Route element={<Layout token={token} />}>
+          {/* Ruta protegida: "/" */}
+          {/* Home */}
+          <Route
+            index
+            element={
+              <ProtectedRoute token={token}>
+                <Home token={token}/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute token={token}>
+                <Home token={token}/>
+              </ProtectedRoute>
+            }
+          />
+          {/* Listas */}
+          <Route
+            path="/lists"
+            element={
+              <ProtectedRoute token={token}>
+                <Lists />
+              </ProtectedRoute>
+            }
+          />
+          {/* Perfil */}
+          {/*<Route
+            path="/perfil"
+            element={
+              <ProtectedRoute token={token}>
+                <Profile />
+              </ProtectedRoute>
+            }
+          /> */}
+        </Route>
+
+        {/* Página no encontrada */}
+        <Route path="*" element={<h1>Página no encontrada</h1>} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
