@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Lists from "./components/Lists";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext"; // 👈 envolvemos toda la app
+import { AuthProvider } from "./context/AuthContext"; // envolvemos toda la app
 import "./App.css";
 
 // Layout con Navbar y Outlet para las rutas internas
