@@ -1,0 +1,45 @@
+<!-- Código generado con chat gpt con el fin de poder comprobar que funciona la API -->
+ <!-- Correr el server, ir a navegador -> http://localhost:3000/movies.html -->
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Películas Populares</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { text-align: center; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; }
+    .card img { max-width: 100%; border-radius: 6px; }
+    .title { font-weight: bold; margin-top: 8px; }
+    .date { color: #555; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Películas Populares (API Backend)</h1>
+  <div id="movies" class="grid"></div>
+
+  <script>
+    async function loadMovies() {
+      try {
+        const res = await fetch("/api/movies/popular");
+        const movies = await res.json();
+
+        const grid = document.getElementById("movies");
+        grid.innerHTML = movies.map(m => `
+          <div class="card">
+            ${m.poster ? `<img src="${m.poster}" alt="${m.title}">` : ""}
+            <div class="title">${m.title}</div>
+            <div class="date">${m.release_date || ""}</div>
+          </div>
+        `).join("");
+      } catch (err) {
+        console.error(err);
+        document.getElementById("movies").innerHTML = "<p>Error al cargar películas</p>";
+      }
+    }
+
+    loadMovies();
+  </script>
+</body>
+</html>

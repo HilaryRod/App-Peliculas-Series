@@ -20,6 +20,8 @@ app.use(cookieParser())
 app.use("/api", router)
 app.use("/api/movies", movieRoutes)
 app.use("/api/auth", authRoutes)
+app.use(express.static("public")); //Para verificar si sirve la api pelis, html
+
 
 /* Conectar Mongoose */
 mongoose.connect(process.env.MONGODB_KEY)
