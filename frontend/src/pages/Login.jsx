@@ -1,8 +1,11 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { loginRequest } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 import "../styles/style.css";
 function Login() {
+  const {setUser}=useAuth()
   const {
     register,
     handleSubmit,
@@ -18,22 +21,15 @@ function Login() {
     try {
       setApiError("");
       setApiSuccess("");
+    const res = await loginRequest(data); 
+    setUser(res.data.user);               // user viene del backend
 
-      const res = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Error en el login ❌");
-
-      localStorage.setItem("token", result.token);
-      setApiSuccess("✅ Login exitoso, redirigiendo...");
-      reset(); //limpiar el formulario
-      setTimeout(() => navigate("/home"), 1500);
+    setApiSuccess("Login exitoso, redirigiendo...");
+    reset();
+    setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
-      setApiError(err.message || "No se pudo conectar al servidor 🚨");
+      console.log("Error login:", err.response?.data || err);
+      setApiError(err.response?.data?.message || "Error en el login");
     }
   };
 

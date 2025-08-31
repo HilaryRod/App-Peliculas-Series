@@ -5,7 +5,7 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Lists from "./components/Lists";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext"; // envolvemos toda la app
 import "./App.css";
 
@@ -34,6 +34,7 @@ function App() {
           {/* Rutas protegidas dentro del layout */}
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} /> 
             <Route
               path="/lists"
               element={

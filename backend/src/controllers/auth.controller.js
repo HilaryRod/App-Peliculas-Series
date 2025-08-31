@@ -47,11 +47,15 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body
+  console.log("Login request:", req.body);
+
   try {
     const userFound = await Usuario.findOne({email})
     if(!userFound) return res.status(400).json({message: "Usuario no encontrado"})
+    
     const isMatch = await bcrypt.compare(password, userFound.password)
     if(!isMatch) return res.status(400).json({message: "Contraseña incorrecta"})
+    
     jwt.sign({
       id: userFound._id
     },
@@ -61,14 +65,19 @@ export const login = async (req, res) => {
       },
       (err, token) => {
         if (err) console.log(err)
-        res.cookie("token", token)
+        res.cookie("token", token,{
+            httpOnly:true,
+            secure:false,
+            sameSite:"lax",
+        })
         res.json({
+        user:{
           id: userFound._id,
           username: userFound.username,
           email: userFound.email,
           createdAt: userFound.createdAt,
           updatedAt: userFound.updatedAt,
-        })
+      }})
       }
     )
   } catch (error) {
@@ -78,7 +87,10 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
     res.cookie("token", "", {
-        expires:new Date(0)
+        httpOnly:true,
+        secure:false,
+        sameSite:"lax",
+        expires: new Date(0)
     })
     return res.sendStatus(200)
 }
@@ -88,10 +100,11 @@ export const profile = async (req, res) => {
   if (!userFound) return res.status(400).json({ message: "Usuario no encontrado" })
 
   return res.json({
+   user:{
     id: userFound._id,
     username: userFound.username,
     email: userFound.email,
     createdAt: userFound.createdAt,
     updatedAt: userFound.updatedAt,
-  })
+  }})
 } 

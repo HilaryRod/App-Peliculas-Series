@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { profileRequest } from "../api/auth"; // tus llamadas al backend
+import { profileRequest, logoutRequest} from "../api/auth"; // tus llamadas al backend
 
 // Crear contexto
 const AuthContext = createContext();
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   // Logout: llama al backend y limpia usuario
   const logout = async () => {
     try {
-      //await logoutRequest(); // backend borra cookie
+      await logoutRequest(); // backend borra cookie
     } catch (error) {
       console.log("Error al cerrar sesión:", error);
     } finally {
