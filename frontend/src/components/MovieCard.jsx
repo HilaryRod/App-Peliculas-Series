@@ -1,6 +1,14 @@
 import React from "react";
 
 function MovieCard({ movie }) {
+    // Convertimos release_date a objeto Date
+  const formattedDate = movie.release_date
+    ? new Date(movie.release_date).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "long",
+      })
+    : "Fecha desconocida";
+
   return (
     <div
       className="movie-card"
@@ -19,7 +27,7 @@ function MovieCard({ movie }) {
         alt={movie.title}
         style={{ width: "100%", borderRadius: "8px" }}
       />
-      <h3>{movie.title} ({movie.year})</h3>
+      <h3>{movie.title} ({formattedDate})</h3>
     </div>
   );
 }
