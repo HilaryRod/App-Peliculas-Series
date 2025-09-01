@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Profile.css";
 import { profileRequest, logoutRequest } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
+import osoImg from "../assets/oso.png";
 
 function Profile() {
   const {user, setUser} = useAuth();
@@ -48,6 +49,7 @@ function Profile() {
         <h2>Mi Perfil</h2>
         <p><strong>Nombre:</strong> {user.username}</p>
         <p><strong>Email:</strong> {user.email}</p>
+        <img src={osoImg} alt="Avatar" className="avatar" />
         <p><strong>Creado:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
          <p><strong>Última actualización:</strong> {new Date(user.updatedAt).toLocaleDateString()}</p>
         <button className="btn" onClick={handleLogout}>Cerrar sesión</button>
