@@ -1,40 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Profile.css";
+import { profileRequest, logoutRequest } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
-function Profile({ token }) {
-  const [userData, setUserData] = useState(null);
+function Profile() {
+  const {user, setUser} = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState("");
   const navigate = useNavigate();
 
-  // Traer info del usuario desde backend usando el token
+ 
   useEffect(() => {
-    if (!token) return;
-
-    fetch("/api/auth/me", {
-      headers: {
-        "Authorization": `Bearer ${token}`
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const res = await profileRequest(); // Llamada al backend
+        setUser(res.data.user);            // Actualizamos el contexto
+        setLoading(false);
+      } catch (err) {
+        console.log("Error fetching profile:", err.response?.data || err);
+        setApiError("No se pudo cargar la información del usuario");
+        setLoading(false);
       }
-    })
-      .then(res => res.json())
-      .then(data => setUserData(data))
-      .catch(() => setUserData(null));
-  }, [token]);
+    };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+     if (!user) fetchProfile();
+    else setLoading(false);
+  }, [setUser, user]);
+
+  const handleLogout = async () => {
+    try {
+      await logoutRequest();       // Llamada al backend para cerrar sesión
+      setUser(null);               // Limpiamos el contexto
+      navigate("/login");          // Redirigimos al login
+    } catch (err) {
+      console.log("Error logout:", err);
+    }
   };
 
-  if (!userData) return <p>Cargando información...</p>;
+  if (loading) return <p>Cargando información...</p>;
+  if (apiError) return <p className="error">{apiError}</p>;
 
   return (
     <div className="profile-container">
       <div className="profile-card">
         <h2>Mi Perfil</h2>
-        <p><strong>Nombre:</strong> {userData.name}</p>
-        <p><strong>Email:</strong> {userData.email}</p>
-        {userData.avatar && <img src="/assets/oso.png" alt="Avatar" className="avatar" />}
-        <button className="btn" onClick={logout}>Cerrar sesión</button>
+        <p><strong>Nombre:</strong> {user.username}</p>
+        <p><strong>Email:</strong> {user.email}</p>
+        <p><strong>Creado:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
+         <p><strong>Última actualización:</strong> {new Date(user.updatedAt).toLocaleDateString()}</p>
+        <button className="btn" onClick={handleLogout}>Cerrar sesión</button>
       </div>
     </div>
   );
