@@ -10,7 +10,7 @@ function MovieModal({ movie, token, onClose }) {
 
     // Traer reseñas del backend
   useEffect(() => {
-    fetch(`/api/reviews/${movie.id}`) // RUTA BACKEND
+    fetch(`http://localhost:3000/api/reviews/${movie.id}`) // RUTA BACKEND
       .then(res => res.json())
       .then(data => {
         // backend debería enviar algo como: { id, estrellas, comentario, usuario: "Nombre" }
@@ -23,7 +23,7 @@ function MovieModal({ movie, token, onClose }) {
       .catch(() => setReviews([]));
   }, [movie.id]);
 
-  const submitReview = () => {
+  const submitReview = async () => {
     if (!token) return alert("Debes iniciar sesión para dejar una reseña");
 
     const reviewData = {
@@ -32,25 +32,35 @@ function MovieModal({ movie, token, onClose }) {
       comentario: userComment
     };
 
-    fetch("/api/reviews", { // RUTA BACKEND
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}` // ⚡ token al backend para verificación
-      },
-      body: JSON.stringify(reviewData)
-    })
-      .then(res => res.json())
-      .then(newReview => {
-        const updatedReviews = [...reviews, newReview];
-        setReviews(updatedReviews);
-
-        const avg = updatedReviews.reduce((acc, r) => acc + r.estrellas, 0) / updatedReviews.length;
-        setAverageRating(avg.toFixed(1));
-
-        setUserRating(0);
-        setUserComment("");
+    try {
+      const res = await fetch("http://localhost:3000/api/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(reviewData),
       });
+
+      if (!res.ok) throw new Error("Error al enviar la reseña");
+
+      const newReview = await res.json();
+
+      // Actualizar estado local inmediatamente
+      const updatedReviews = [...reviews, newReview];
+      setReviews(updatedReviews);
+
+      const avg = updatedReviews.reduce((acc, r) => acc + r.estrellas, 0) / updatedReviews.length;
+      setAverageRating(avg.toFixed(1));
+
+      // Limpiar inputs
+      setUserRating(0);
+      setUserComment("");
+
+    } catch (err) {
+      console.error(err);
+      alert("Ocurrió un error al enviar la reseña");
+    }
   };
 
   return (
@@ -88,9 +98,11 @@ function MovieModal({ movie, token, onClose }) {
         <div style={{ marginTop: "1rem" }}>
           <h4>Reseñas:</h4>
           {reviews.map(r => (
-            <div key={r.id} style={{ borderTop: "1px solid #444", paddingTop: "0.5rem" }}>
+            <div 
+            key={r.id} 
+            style={{ borderTop: "1px solid #444", paddingTop: "0.5rem" }}>
             {/* Aquí se mostrará el nombre real del usuario si el backend lo devuelve */}
-            <strong>{r.usuario ? r.usiario : "Anónimo"}</strong> ⭐ {r.estrellas}
+            <strong>{r.usuario ? r.usuario : "Anónimo"}</strong> ⭐ {r.estrellas}
               <p>{r.comentario}</p>
             </div>
           ))}

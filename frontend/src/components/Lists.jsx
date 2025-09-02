@@ -5,41 +5,62 @@ function Lists({ token }) {
   const [lists, setLists] = useState([]);
   const [newListName, setNewListName] = useState("");
 
+  // Cargar listas al entrar
   useEffect(() => {
     if (token) {
-      // Simulación de fetch (aquí iría tu backend)
-            fetch("http://localhost:3000/api/auth/lists", {
+      fetch("http://localhost:3000/api/auth/lists", { //direccion backend
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
         .then((data) => setLists(data))
         .catch(() => {
-          // En caso de error
-      setLists([
-        {
-          id: 1,
-          name: "Favoritas",
-          movies: [
+          // En caso de error, muestra algo de prueba
+          setLists([
             {
-              id: 3,
-              title: "The Matrix",
-              year: 1999,
-              poster:
-                "https://play-lh.googleusercontent.com/JCgd2EG9UkbJE9n1bWuBwsvwVr81mS7Ad2ve0K35_w10rqOtRlm9OlPAuAENQXVmh3YpHDGJbsKiT5iaqL8",
+              id: 1,
+              name: "Favoritas",
+              movies: [
+                {
+                  id: 3,
+                  title: "The Matrix",
+                  year: 1999,
+                  poster:
+                    "https://play-lh.googleusercontent.com/JCgd2EG9UkbJE9n1bWuBwsvwVr81mS7Ad2ve0K35_w10rqOtRlm9OlPAuAENQXVmh3YpHDGJbsKiT5iaqL8",
+                },
+              ],
             },
-          ],
-        },
-      ]);
-      });
+          ]);
+        });
     }
   }, [token]);
 
-  const handleCreateList = () => {
+  // Crear nueva lista
+  const handleCreateList = async () => {
     if (!newListName.trim()) return;
-    const newList = { id: Date.now(), name: newListName, movies: [] };
 
-    setLists([...lists, newList]);
-    setNewListName("");
+    try {
+      const res = await fetch("http://localhost:3000/api/auth/lists", { //fireccion backend
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: newListName }),
+      });
+
+      if (!res.ok) throw new Error("Error al crear lista");
+
+      const data = await res.json();
+      setLists([...lists, data]); // agregar la nueva lista a estado
+      setNewListName("");
+    } catch (err) {
+      console.error("Error al crear la lista", err);
+
+      // fallback local (que funcione sin backend)
+      const newList = { id: Date.now(), name: newListName, movies: [] };
+      setLists([...lists, newList]);
+      setNewListName("");
+    }
   };
 
   if (!token) {
@@ -96,4 +117,3 @@ function Lists({ token }) {
 }
 
 export default Lists;
-
