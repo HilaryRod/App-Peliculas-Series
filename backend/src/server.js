@@ -5,6 +5,7 @@ import {config} from "dotenv"
 import router from "./routes/index.js"
 import movieRoutes from "./routes/movie.routes.js"
 import authRoutes from "./routes/auth.routes.js"
+import ratingRoutes from "./routes/rating.routes.js"
 import cookieParser from "cookie-parser"
 
 config()
@@ -20,7 +21,8 @@ app.use(cookieParser())
 app.use("/api", router)
 app.use("/api/movies", movieRoutes)
 app.use("/api/auth", authRoutes)
-app.use(express.static("public")); //Para verificar si sirve la api pelis, html
+app.use("/api/ratings", ratingRoutes) 
+app.use(express.static("public")) //Para verificar si sirve la api pelis, html
 
 
 /* Conectar Mongoose */
