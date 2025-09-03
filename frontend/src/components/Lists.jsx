@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import MovieCard from "../components/MovieCard";
 
-function Lists({ token }) {
+function Lists() {
+  const { user } = useAuth();
   const [lists, setLists] = useState([]);
   const [newListName, setNewListName] = useState("");
 
   // Cargar listas al entrar
   useEffect(() => {
-    if (token) {
+    if (user) {
       fetch("http://localhost:3000/api/auth/lists", { //direccion backend
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include"
       })
         .then((res) => res.json())
         .then((data) => setLists(data))
@@ -32,7 +34,7 @@ function Lists({ token }) {
           ]);
         });
     }
-  }, [token]);
+  }, [user]);
 
   // Crear nueva lista
   const handleCreateList = async () => {
@@ -43,7 +45,7 @@ function Lists({ token }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user}`,
         },
         body: JSON.stringify({ name: newListName }),
       });
@@ -63,7 +65,30 @@ function Lists({ token }) {
     }
   };
 
-  if (!token) {
+  const handleAddToList = async (listId, movie) => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/auth/lists/${listId}/movies`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ movieId: movie.id }),
+    });
+
+    if (!res.ok) throw new Error("Error al agregar película");
+
+    // 🔄 refrescar listas desde el backend
+    const updated = await fetch("http://localhost:3000/api/auth/lists", {
+      credentials: "include",
+    });
+    const data = await updated.json();
+    setLists(data);
+
+  } catch (err) {
+    console.error("Error al agregar película", err);
+  }
+};
+
+  if (!user) {
     return (
       <div className="auth-container">
         <div className="container">
@@ -103,7 +128,11 @@ function Lists({ token }) {
                 ) : (
                   <div className="movies-grid">
                     {list.movies.map((m) => (
-                      <MovieCard key={m.id} movie={m} token={token} />
+                      <MovieCard 
+                      key={m.id} 
+                      movie={m} 
+                      lists={lists}                 // todas tus listas para el prompt
+                      onAddToList={handleAddToList}/>
                     ))}
                   </div>
                 )}

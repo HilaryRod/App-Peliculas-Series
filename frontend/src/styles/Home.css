@@ -1,8 +1,10 @@
 /* Home.css */
 .page-container {
-  padding: 80px 2rem 2rem 2rem; /* altura del navbar + margen, top = navbar altura + 20px de espacio  */
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 0; /* altura del navbar + margen, top = navbar altura + 20px de espacio  80px 2rem 2rem 2rem*/
+  /*max-width: 1200px;
+  margin: 0 auto;*/
+  padding-bottom: 2rem; /* opcional */
+
 }
 
 .page-container h2 {
