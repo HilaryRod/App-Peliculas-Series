@@ -15,9 +15,9 @@ router.get("/:movieId", obtenerResena);
 /* Para verificar en Thunder client: 
     Para agregar una reseña se debe de estar el usuario registrado
     y en el estado login: 
-    POST -> http://localhost:3000/api/resenas
+    POST -> http://localhost:3000/api/review
 
     Para obtener las reseñas de una pelicula:
-    GET -> http://localhost:3000/api/resenas/911430
+    GET -> http://localhost:3000/api/review/911430
  */
 export default router;
