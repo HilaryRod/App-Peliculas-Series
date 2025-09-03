@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { rateMovie, promedio } from "../controllers/rating.controller.js";
+import { rateMovie, promedio, userRating } from "../controllers/rating.controller.js";
 import { authRequired } from "../middlewares/validateToken.js";
 
 const router = Router();
@@ -7,6 +7,9 @@ const router = Router();
 // Validamos que el usuario esté registrado 
 // Guardar calificación
 router.post("/", authRequired, rateMovie);
+
+// Obtener calificación del usuario
+router.get("/:movieId/user", authRequired, userRating);
 
 // Para obtener el promedio de un peli
 router.get("/:movieId/promedio", promedio);
@@ -17,6 +20,9 @@ router.get("/:movieId/promedio", promedio);
     y en el estado login: 
     POST -> http://localhost:3000/api/ratings
 
+    Para obtener el raiting del usuario:
+    GET -> http://localhost:3000/api/ratings/911430/user
+    
     Para ver el promedio de una pelicula:
     GET -> http://localhost:3000/api/ratings/911430/promedio
  */
