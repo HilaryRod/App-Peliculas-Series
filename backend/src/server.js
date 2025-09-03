@@ -23,7 +23,7 @@ app.use("/api", router)
 app.use("/api/movies", movieRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/ratings", ratingRoutes) 
-app.use("/api/resenas", resenaRoutes)
+app.use("/api/review", resenaRoutes)
 app.use(express.static("public")) //Para verificar si sirve la api pelis, html
 
 
