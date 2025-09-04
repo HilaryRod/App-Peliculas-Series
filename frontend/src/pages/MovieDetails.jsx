@@ -42,7 +42,7 @@ function MovieDetails() {
         });
         if (!res.ok) throw new Error("Error al obtener reseñas");
         const data = await res.json();
-        setReviews(Array.isArray(data.resenasEncontradas) ? data.resenasEncontradas : []);
+        setReviews(Array.isArray(data.resenas) ? data.resenas : []);
       } catch (err) {
         console.error(err);
         setReviews([]);
@@ -147,7 +147,12 @@ function MovieDetails() {
         <h4>Reseñas:</h4>
         {reviews.length > 0 ? reviews.map(r => (
           <div key={r._id || r.id} style={{ borderTop: "1px solid #444", paddingTop: "0.5rem" }}>
-  <strong>{r.userId?.username || "Anónimo"}</strong>
+  <strong>{r.user || "Anónimo"}</strong> 
+  {r.rating ? (
+        <span> ⭐ {r.rating}</span>
+      ) : (
+        <span style={{ fontStyle: "italic", color: "#aaa" }}> (no calificó)</span>
+      )}
   <p>{r.texto}</p>
 </div>
 

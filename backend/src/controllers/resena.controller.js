@@ -36,7 +36,7 @@ export const obtenerResena = async (req, res) => {
           user: resena.userId.username,
           texto: resena.texto,
           fecha: resena.createdAt,
-          rating: rating ? rating.score : "Usuario no ha calificado" //podemos poner null
+          rating: rating ? rating.score :null, //"Usuario no ha calificado" //podemos poner null
         };
       })
     );
