@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import StarRating from "../components/StarRating";
 import { useAuth } from "../context/AuthContext";
-import "../styles/MovieModal.css";
+import "../styles/MovieDetails.css";
 
 function MovieDetails() {
   const { id } = useParams();
