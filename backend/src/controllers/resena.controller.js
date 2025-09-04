@@ -20,13 +20,13 @@ export const obtenerResena = async (req, res) => {
   try {
     const resenasEncontradas = await Resena.find({ movieId })
         .populate("userId", "username") // Obtiene los datos de usuario
-        .sort({ createAd: -1 })
+        .sort({ createdAt: -1 })//se corrigio error ortografico 
        
         if(resenasEncontradas.length === 0){
             return res.json({ message: "Esta película no tiene reseñas", resenasEncontradas: [] })
         }
 
-        res.json(resenasEncontradas)
+        res.json({resenasEncontradas})
     } catch (error) {
        res.status(500).json({message: error.message})
   }

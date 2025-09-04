@@ -16,7 +16,7 @@ export const rateMovie = async (req, res) => {
 
     const newRating = new Rating({ userId, movieId, score })
     await newRating.save()
-    res.status(201).json({ message: "Calificación guardada", ratinFound: newRating })
+    res.status(201).json({ message: "Calificación guardada", newRating })//se quito ratinFound pq estaba mal escrito
   
     } catch (error) {
        res.status(500).json({message: error.message})

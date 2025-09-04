@@ -35,10 +35,9 @@ function MovieDetails() {
   }, [id]);
 
   // Traer reseñas
-  useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/resenas/${id}`, {
+        const res = await fetch(`http://localhost:3000/api/review/${id}`, {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Error al obtener reseñas");
@@ -49,14 +48,14 @@ function MovieDetails() {
         setReviews([]);
       }
     };
+    useEffect(()=>{
     fetchReviews();
   }, [id]);
 
   // Traer promedio del backend
-  useEffect(() => {
     const fetchAverage = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/rating/promedio/${id}`, {
+        const res = await fetch(`http://localhost:3000/api/ratings/${id}/promedio`, {
           credentials: "include",
         });
         if (!res.ok) throw new Error("Error al obtener promedio");
@@ -69,7 +68,8 @@ function MovieDetails() {
         setTotalReviews(0);
       }
     };
-    fetchAverage();
+    useEffect(() => {
+      fetchAverage();
   }, [id]);
 
   const submitReview = async () => {
@@ -83,10 +83,9 @@ function MovieDetails() {
         movieId: id,
         texto: userComment,
         score: userRating,
-        userId: user._id, // opcional: si tu backend lo necesita
       };
 
-      const res = await fetch("http://localhost:3000/api/rating", {
+      const res = await fetch("http://localhost:3000/api/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -95,19 +94,9 @@ function MovieDetails() {
 
       if (!res.ok) throw new Error("Error al enviar la reseña");
 
-      // refrescar reseñas y promedio
-      const resReview = await fetch(`http://localhost:3000/api/resenas/${id}`, {
-        credentials: "include",
-      });
-      const dataReview = await resReview.json();
-      setReviews(Array.isArray(dataReview.resenasEncontradas) ? dataReview.resenasEncontradas : []);
-
-      const resAvg = await fetch(`http://localhost:3000/api/rating/promedio/${id}`, {
-        credentials: "include",
-      });
-      const dataAvg = await resAvg.json();
-      setAverageRating(dataAvg.promedio || 0);
-      setTotalReviews(dataAvg.total || 0);
+    // Refrescar reseñas y promedio
+      await fetchReviews();
+      await fetchAverage();
 
       setUserRating(0);
       setUserComment("");
@@ -158,9 +147,10 @@ function MovieDetails() {
         <h4>Reseñas:</h4>
         {reviews.length > 0 ? reviews.map(r => (
           <div key={r._id || r.id} style={{ borderTop: "1px solid #444", paddingTop: "0.5rem" }}>
-            <strong>{r.userId?.username || "Anónimo"}</strong> ⭐ {r.score || r.score}
-            <p>{r.texto}</p>
-          </div>
+  <strong>{r.userId?.username || "Anónimo"}</strong>
+  <p>{r.texto}</p>
+</div>
+
         )) : <p>Aún no hay reseñas</p>}
       </div>
     </div>

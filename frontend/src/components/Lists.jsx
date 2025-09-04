@@ -10,44 +10,47 @@ function Lists() {
   // Cargar listas al entrar
   useEffect(() => {
     if (user) {
-      fetch("http://localhost:3000/api/auth/lists", { //direccion backend
+      fetch("http://localhost:3000/api/list", { //direccion backend
         credentials: "include"
       })
-        .then((res) => res.json())
-        .then((data) => setLists(data))
-        .catch(() => {
-          // En caso de error, muestra algo de prueba
-          setLists([
-            {
-              id: 1,
-              name: "Favoritas",
-              movies: [
-                {
-                  id: 3,
-                  title: "The Matrix",
-                  year: 1999,
-                  poster:
-                    "https://play-lh.googleusercontent.com/JCgd2EG9UkbJE9n1bWuBwsvwVr81mS7Ad2ve0K35_w10rqOtRlm9OlPAuAENQXVmh3YpHDGJbsKiT5iaqL8",
-                },
-              ],
-            },
-          ]);
-        });
-    }
-  }, [user]);
+.then((res) => res.json())
+      .then((data) => {
+        if (data.listas) setLists(data.listas); // si no hay listas, retorna []
+        else setLists(data); // si backend ya devuelve solo array
+      })
+      .catch(() => {
+        // fallback
+        setLists([
+          {
+            id: 1,
+            nombre: "Favoritas",
+            peliculas: [
+              {
+                movieId: 3,
+                titulo: "The Matrix",
+                poster_path:
+                  "https://play-lh.googleusercontent.com/JCgd2EG9UkbJE9n1bWuBwsvwVr81mS7Ad2ve0K35_w10rqOtRlm9OlPAuAENQXVmh3YpHDGJbsKiT5iaqL8",
+              },
+            ],
+          },
+        ]);
+      });
+  }
+}, [user]);
+
 
   // Crear nueva lista
   const handleCreateList = async () => {
     if (!newListName.trim()) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/auth/lists", { //fireccion backend
+      const res = await fetch("http://localhost:3000/api/lists", { //fireccion backend
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user}`,
+
         },
-        body: JSON.stringify({ name: newListName }),
+        body: JSON.stringify({ nombre: newListName, peliculas:[]}),
       });
 
       if (!res.ok) throw new Error("Error al crear lista");
@@ -67,7 +70,7 @@ function Lists() {
 
   const handleAddToList = async (listId, movie) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/auth/lists/${listId}/movies`, {
+    const res = await fetch(`http://localhost:3000/api/auth/list/${listId}/movies`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -77,7 +80,7 @@ function Lists() {
     if (!res.ok) throw new Error("Error al agregar película");
 
     // 🔄 refrescar listas desde el backend
-    const updated = await fetch("http://localhost:3000/api/auth/lists", {
+    const updated = await fetch("http://localhost:3000/api/auth/list", {
       credentials: "include",
     });
     const data = await updated.json();
