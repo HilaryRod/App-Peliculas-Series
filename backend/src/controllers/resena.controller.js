@@ -1,4 +1,5 @@
 import Resena from "../models/resenas.model.js";
+import Rating from "../models/rating.model.js";
 
 export const agregarResena = async (req, res) => {
   const { movieId, texto } = req.body
@@ -14,20 +15,34 @@ export const agregarResena = async (req, res) => {
        res.status(500).json({message: error.message})
   }
 }
+
 export const obtenerResena = async (req, res) => {
-  const { movieId } = req.params
+  const { movieId } = req.params;
   
   try {
     const resenasEncontradas = await Resena.find({ movieId })
-        .populate("userId", "username") // Obtiene los datos de usuario
-        .sort({ createdAt: -1 })//se corrigio error ortografico 
-       
-        if(resenasEncontradas.length === 0){
-            return res.json({ message: "Esta película no tiene reseñas", resenasEncontradas: [] })
-        }
+      .populate("userId", "username")
+      .sort({ createdAt: -1 })
 
-        res.json({resenasEncontradas})
-    } catch (error) {
-       res.status(500).json({message: error.message})
+    if (resenasEncontradas.length === 0) {
+      return res.json({ resenas: [] })
+    }
+
+    const resenasConRating = await Promise.all(
+      resenasEncontradas.map(async (resena) => {
+        const rating = await Rating.findOne({ movieId, userId: resena.userId._id });
+        return {
+          _id: resena._id,
+          user: resena.userId.username,
+          texto: resena.texto,
+          fecha: resena.createdAt,
+          rating: rating ? rating.score : "Usuario no ha calificado" //podemos poner null
+        };
+      })
+    );
+
+    res.json({ resenas: resenasConRating });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 }

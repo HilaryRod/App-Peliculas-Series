@@ -1,5 +1,6 @@
 import Rating from "../models/rating.model.js";
 
+// Publicar el rating
 export const rateMovie = async (req, res) => {
   const { movieId, score } = req.body
   const userId = req.user.id // Tomamos su JWT
@@ -50,3 +51,20 @@ export const promedio = async (req, res) => {
     res.status(500).json({message: error.message})
   }
 }
+
+// Obtener el rating 
+export const userRating = async (req, res) => {
+  const { movieId } = req.params;
+  const userId = req.user.id;
+  try {
+    const ratingFnd = await Rating.findOne({ movieId, userId });
+
+    if (!ratingFnd) {
+      return res.json({ movieId, score: null }); 
+    }
+
+    res.json({ movieId, score: ratingFnd.score });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
