@@ -1,7 +1,8 @@
 import React from "react";
 import "../styles/MovieCard.css";
+import { Link } from "react-router-dom"; 
 
-function MovieCard({ movie, lists = [], onAddToList, onSelect }) {
+function MovieCard({ movie, lists = [], onAddToList}) {
   // Convertimos release_date a objeto Date
   const formattedDate = movie.release_date
     ? new Date(movie.release_date).toLocaleDateString("es-ES", {
@@ -15,7 +16,7 @@ function MovieCard({ movie, lists = [], onAddToList, onSelect }) {
 
     const listId = prompt(
       "Ingresa el ID de la lista a la que quieres agregar la película:\n" +
-        lists.map((l) => `${l.id}: ${l.name}`).join("\n")
+        lists.map((l) => `${l._id}: ${l.name}`).join("\n")
     );
 
     if (listId) onAddToList(listId, movie);
@@ -62,8 +63,7 @@ function MovieCard({ movie, lists = [], onAddToList, onSelect }) {
       )}
 
       {/* Botón opcional para abrir modal */}
-      {onSelect && (
-        <button
+      <Link to={`/movies/${movie._id || movie.id}`}
           style={{
             marginTop: "0.5rem",
             padding: "0.4rem 0.8rem",
@@ -75,11 +75,9 @@ function MovieCard({ movie, lists = [], onAddToList, onSelect }) {
             display: "block",
             width: "100%",
           }}
-          onClick={() => onSelect(movie)}
         >
           Ver detalles
-        </button>
-      )}
+        </Link>
     </div>
   );
 }

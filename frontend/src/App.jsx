@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import MovieDetails from "./pages/MovieDetails";
 import Lists from "./components/Lists";
 import ProtectedRoute from "./ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext"; // envolvemos toda la app
@@ -31,10 +32,12 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           
+          
           {/* Rutas protegidas dentro del layout */}
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} /> 
+            <Route path="/movies/:id" element={<MovieDetails />} />
             <Route
               path="/lists"
               element={

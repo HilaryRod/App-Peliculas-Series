@@ -5,6 +5,9 @@ import {config} from "dotenv"
 import router from "./routes/index.js"
 import movieRoutes from "./routes/movie.routes.js"
 import authRoutes from "./routes/auth.routes.js"
+import ratingRoutes from "./routes/rating.routes.js"
+import resenaRoutes from "./routes/resenas.routes.js"
+import listRoutes from "./routes/list.routes.js"
 import cookieParser from "cookie-parser"
 
 config()
@@ -20,9 +23,12 @@ app.use(cors({
 app.use(cookieParser()) 
 
 //Llamada a rutas
-app.use("/api", router)
+app.use("/api/list", listRoutes);
 app.use("/api/movies", movieRoutes)
 app.use("/api/auth", authRoutes)
+app.use("/api/ratings", ratingRoutes) 
+app.use("/api/review", resenaRoutes)
+app.use("/api", router)
 
 /* Conectar Mongoose */
 mongoose.connect(process.env.MONGODB_KEY)
