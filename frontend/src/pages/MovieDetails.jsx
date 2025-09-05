@@ -6,17 +6,22 @@ import "../styles/MovieDetails.css";
 
 function MovieDetails() {
   const { id } = useParams();
-  const { user, loading: authLoading } = useAuth(); // <-- usamos loading del contexto
+  const { user, loading: authLoading } = useAuth();
   const [movie, setMovie] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
   const [userRating, setUserRating] = useState(0);
   const [userComment, setUserComment] = useState("");
-  const [loading, setLoading] = useState(true); // para cargar la película
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Traer datos de la película desde el backend
+  // revisamos si ya dejó reseña
+  const yaDejoResena = reviews.some(
+    (r) => r.userId?._id === user?._id // ⚠️ revisar que coincida con lo que devuelve tu backend
+  );
+
+  // Traer datos de la película
   useEffect(() => {
     const fetchMovie = async () => {
       try {
@@ -35,41 +40,46 @@ function MovieDetails() {
   }, [id]);
 
   // Traer reseñas
-    const fetchReviews = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/api/review/${id}`, {
-          credentials: "include",
-        });
-        if (!res.ok) throw new Error("Error al obtener reseñas");
-        const data = await res.json();
-        setReviews(Array.isArray(data.resenas) ? data.resenas : []);
-      } catch (err) {
-        console.error(err);
-        setReviews([]);
-      }
-    };
-    useEffect(()=>{
+  const fetchReviews = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/review/${id}`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Error al obtener reseñas");
+      const data = await res.json();
+      setReviews(Array.isArray(data.resenas) ? data.resenas : []);
+    } catch (err) {
+      console.error(err);
+      setReviews([]);
+    }
+  };
+
+  useEffect(() => {
     fetchReviews();
   }, [id]);
 
-  // Traer promedio del backend
-    const fetchAverage = async () => {
-      try {
-        const res = await fetch(`http://localhost:3000/api/ratings/${id}/promedio`, {
+  // Traer promedio
+  const fetchAverage = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/ratings/${id}/promedio`,
+        {
           credentials: "include",
-        });
-        if (!res.ok) throw new Error("Error al obtener promedio");
-        const data = await res.json();
-        setAverageRating(data.promedio || 0);
-        setTotalReviews(data.total || 0);
-      } catch (err) {
-        console.error(err);
-        setAverageRating(0);
-        setTotalReviews(0);
-      }
-    };
-    useEffect(() => {
-      fetchAverage();
+        }
+      );
+      if (!res.ok) throw new Error("Error al obtener promedio");
+      const data = await res.json();
+      setAverageRating(data.promedio || 0);
+      setTotalReviews(data.total || 0);
+    } catch (err) {
+      console.error(err);
+      setAverageRating(0);
+      setTotalReviews(0);
+    }
+  };
+
+  useEffect(() => {
+    fetchAverage();
   }, [id]);
 
   const submitReview = async () => {
@@ -77,86 +87,125 @@ function MovieDetails() {
       alert("Debes iniciar sesión para enviar una reseña");
       return;
     }
+    if (!userComment.trim() || !userRating) {
+      alert("Debes escribir un comentario y seleccionar una calificación");
+      return;
+    }
 
     try {
-      const reviewData = {
-        movieId: id,
-        texto: userComment,
-        score: userRating,
-      };
-
-      const res = await fetch("http://localhost:3000/api/review", {
+      // 1. Crear reseña
+      const resResena = await fetch("http://localhost:3000/api/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(reviewData),
+        body: JSON.stringify({ movieId: id, texto: userComment }),
       });
 
-      if (!res.ok) throw new Error("Error al enviar la reseña");
+      if (!resResena.ok) {
+        const errorData = await resResena.json();
+        throw new Error(errorData.message || "Error al enviar reseña");
+      }
 
-    // Refrescar reseñas y promedio
-      await fetchReviews();
-      await fetchAverage();
+      // 2. Crear rating
+      const resRating = await fetch("http://localhost:3000/api/ratings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ movieId: id, score: userRating }),
+      });
 
-      setUserRating(0);
+      if (!resRating.ok) {
+        const errorData = await resRating.json();
+        throw new Error(errorData.message || "Error al enviar rating");
+      }
+
+      // todo bien → limpiar y refrescar
       setUserComment("");
+      setUserRating(0);
+      fetchReviews();
+      fetchAverage();
     } catch (err) {
       console.error(err);
-      alert("Ocurrió un error al enviar la reseña");
+      alert(err.message);
     }
   };
 
-  if (loading || authLoading) return <p>Cargando...</p>; // consideramos loading de auth
+  if (loading || authLoading) return <p>Cargando...</p>;
   if (error) return <p>{error}</p>;
   if (!movie) return <p>No se encontró la película</p>;
 
   return (
     <div className="movie-details">
-      <img src={movie.poster} alt={movie.title} style={{ width: "200px", borderRadius: "8px" }} />
-      <h2>{movie.title} ({movie.release_date?.slice(0, 4) || "Año desconocido"})</h2>
+      <img
+        src={movie.poster}
+        alt={movie.title}
+        style={{ width: "200px", borderRadius: "8px" }}
+      />
+      <h2>
+        {movie.title} ({movie.release_date?.slice(0, 4) || "Año desconocido"})
+      </h2>
       <p>{movie.overview || "Sin sinopsis"}</p>
-      <p>⭐ {averageRating} ({totalReviews} reseñas)</p>
+      <p>
+        ⭐ {averageRating} ({totalReviews} reseñas)
+      </p>
 
-      {/* Formulario de reseñas si hay usuario */}
+      {/* Formulario reseñas */}
       {user ? (
-        <div>
-          <StarRating value={userRating} onChange={setUserRating} />
-          <textarea
-            value={userComment}
-            onChange={(e) => setUserComment(e.target.value)}
-            placeholder="Escribe tu reseña..."
-            style={{
-              width: "100%",
-              marginTop: "0.5rem",
-              padding: "0.5rem",
-              borderRadius: "6px",
-              background: "#465149",
-              color: "#fff",
-              border: "1px solid #879C90",
-            }}
-          />
-          <button className="btn" onClick={submitReview}>
-            Enviar
-          </button>
-        </div>
+        yaDejoResena ? (
+          <p style={{ fontStyle: "italic", color: "#aaa" }}>
+            Ya dejaste una reseña para esta película
+          </p>
+        ) : (
+          <div>
+            <StarRating value={userRating} onChange={setUserRating} />
+            <textarea
+              value={userComment}
+              onChange={(e) => setUserComment(e.target.value)}
+              placeholder="Escribe tu reseña..."
+              style={{
+                width: "100%",
+                marginTop: "0.5rem",
+                padding: "0.5rem",
+                borderRadius: "6px",
+                background: "#465149",
+                color: "#fff",
+                border: "1px solid #879C90",
+              }}
+            />
+            <button className="btn" onClick={submitReview}>
+              Enviar
+            </button>
+          </div>
+        )
       ) : (
-        <p style={{ fontStyle: "italic" }}>Inicia sesión para calificar y dejar tu reseña</p>
+        <p style={{ fontStyle: "italic" }}>
+          Inicia sesión para calificar y dejar tu reseña
+        </p>
       )}
 
       <div style={{ marginTop: "1rem" }}>
         <h4>Reseñas:</h4>
-        {reviews.length > 0 ? reviews.map(r => (
-          <div key={r._id || r.id} style={{ borderTop: "1px solid #444", paddingTop: "0.5rem" }}>
-  <strong>{r.user || "Anónimo"}</strong> 
-  {r.rating ? (
-        <span> ⭐ {r.rating}</span>
-      ) : (
-        <span style={{ fontStyle: "italic", color: "#aaa" }}> (no calificó)</span>
-      )}
-  <p>{r.texto}</p>
-</div>
-
-        )) : <p>Aún no hay reseñas</p>}
+        {reviews.length > 0 ? (
+          reviews.map((r) => (
+            <div
+              key={r._id || r.id}
+              style={{ borderTop: "1px solid #444", paddingTop: "0.5rem" }}
+            >
+              <strong>{r.user || "Anónimo"}</strong>
+              {r.rating ? (
+                <span> ⭐ {r.rating}</span>
+              ) : (
+                <span style={{ fontStyle: "italic", color: "#aaa" }}>
+                  {" "}
+                  (no calificó)
+                </span>
+              )}
+              <p>{r.texto}</p>
+            </div>
+          ))
+        ) : (
+          <p>Aún no hay reseñas</p>
+        )}
       </div>
     </div>
   );

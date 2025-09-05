@@ -6,8 +6,14 @@ export const agregarResena = async (req, res) => {
   const userId = req.user.id // Tomamos su JWT
   try {
     if(!movieId || !texto) return res.status(400).json({ message: "moveId y texto son requeridos" })
-        
-    const resena = new Resena({ userId, movieId, texto });
+      
+     // evitar más de una reseña por user
+    const existe = await Resena.findOne({ userId, movieId });
+    if (existe) {
+      return res.status(400).json({ message: "Ya dejaste una reseña en esta película" });
+    }
+
+    const resena = new Resena({ userId, movieId: String(movieId), texto });
     await resena.save()
 
     res.status(201).json({ message: "Reseña agregada", resena })
