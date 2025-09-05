@@ -1,0 +1,59 @@
+/* Contenedor general */
+.container h2 {
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #879C90;
+  padding-bottom: 0.5rem;
+  color: #fff;
+}
+
+/* Input y botón */
+.container input[type="text"] {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #879C90;
+  background: #525D53;
+  color: #fff;
+  margin-right: 0.5rem;
+}
+
+.container input::placeholder {
+  color: #BFBFBF;
+}
+
+.container .btn {
+  background: #6E1423;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.container .btn:hover {
+  background: #922B21;
+  transform: translateY(-2px);
+}
+
+/* Bloque de cada lista */
+.container .list-block {
+  margin-top: 2rem;
+  background: #6d8073;
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.container .list-block h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #F6A9A1;
+}
+
+/* Grid de películas */
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}

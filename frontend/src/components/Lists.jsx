@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import MovieCard from "../components/MovieCard";
+import "../styles/Listas.css"
 
 function Lists() {
   const { user } = useAuth();
@@ -111,7 +112,7 @@ function Lists() {
           <p>No tienes listas creadas 😢</p>
         ) : (
           lists.map(list => (
-            <div key={list._id} style={{ marginTop: "2rem" }}>
+            <div key={list._id} className="list-block">
               <h3>{list.nombre}</h3>
 
               {list.peliculas.length === 0 ? (
