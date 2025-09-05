@@ -17,10 +17,9 @@ function MovieDetails() {
   const [error, setError] = useState(null);
 
   // revisamos si ya dejó reseña
-  const yaDejoResena = reviews.some(
-    (r) => r.userId?._id === user?._id // ⚠️ revisar que coincida con lo que devuelve tu backend
-  );
-
+const yaDejoResena = user
+  ? reviews.some(r => r.user?._id === user._id)
+  : false;
   // Traer datos de la película
   useEffect(() => {
     const fetchMovie = async () => {
@@ -191,7 +190,7 @@ function MovieDetails() {
               key={r._id || r.id}
               style={{ borderTop: "1px solid #444", paddingTop: "0.5rem" }}
             >
-              <strong>{r.user || "Anónimo"}</strong>
+              <strong>{r.user?.username || "Anónimo"}</strong>
               {r.rating ? (
                 <span> ⭐ {r.rating}</span>
               ) : (

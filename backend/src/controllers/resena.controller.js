@@ -39,7 +39,10 @@ export const obtenerResena = async (req, res) => {
         const rating = await Rating.findOne({ movieId, userId: resena.userId._id });
         return {
           _id: resena._id,
-          user: resena.userId.username,
+           user: {
+           _id: resena.userId._id,// modificar para que se envie d 
+           username: resena.userId.username
+         },
           texto: resena.texto,
           fecha: resena.createdAt,
           rating: rating ? rating.score :null, //"Usuario no ha calificado" //podemos poner null

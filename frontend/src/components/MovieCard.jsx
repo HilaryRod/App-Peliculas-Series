@@ -11,15 +11,12 @@ function MovieCard({ movie, lists = [], onAddToList}) {
       })
     : "Fecha desconocida";
 
-  const handleAddToList = () => {
-    if (lists.length === 0) return alert("No tienes listas creadas");
-
-    const listId = prompt(
-      "Ingresa el ID de la lista a la que quieres agregar la película:\n" +
-        lists.map((l) => `${l._id}: ${l.name}`).join("\n")
-    );
-
-    if (listId) onAddToList(listId, movie);
+    const handleSelectChange = (e) => {
+    const listId = e.target.value;
+    if (listId && onAddToList) {
+      onAddToList(listId, movie);
+      e.target.value = ""; // Reset select
+    }
   };
 
   return (
@@ -36,7 +33,7 @@ function MovieCard({ movie, lists = [], onAddToList}) {
       }}
     >
       <img
-        src={movie.poster}
+        src={movie.poster || movie.poster_path}
         alt={movie.title}
         style={{ width: "100%", borderRadius: "8px" }}
       />
@@ -44,9 +41,11 @@ function MovieCard({ movie, lists = [], onAddToList}) {
         {movie.title} ({formattedDate})
       </h3>
 
-      {/* Botón para agregar a lista */}
-      {onAddToList && (
-        <button
+      {/* Select para agregar a lista */}
+      {lists.length > 0 && onAddToList && (
+        <select
+          onChange={handleSelectChange}
+          defaultValue=""
           style={{
             marginTop: "0.5rem",
             padding: "0.4rem 0.8rem",
@@ -56,31 +55,37 @@ function MovieCard({ movie, lists = [], onAddToList}) {
             color: "#fff",
             cursor: "pointer",
           }}
-          onClick={handleAddToList}
         >
-          ➕ Agregar a lista
-        </button>
+          <option value="" disabled>
+            ➕ Agregar a lista...
+          </option>
+          {lists.map((l) => (
+            <option key={l._id} value={l._id}>
+              {l.nombre}
+            </option>
+          ))}
+        </select>
       )}
 
-      {/* Botón opcional para abrir modal */}
-      <Link to={`/movies/${movie._id || movie.id}`}
-          style={{
-            marginTop: "0.5rem",
-            padding: "0.4rem 0.8rem",
-            borderRadius: "6px",
-            border: "none",
-            background: "#465149",
-            color: "#fff",
-            cursor: "pointer",
-            display: "block",
-            width: "100%",
-          }}
-        >
-          Ver detalles
-        </Link>
+      {/* Botón para ver detalles */}
+      <Link
+        to={`/movies/${movie._id || movie.id}`}
+        style={{
+          marginTop: "0.5rem",
+          padding: "0.4rem 0.8rem",
+          borderRadius: "6px",
+          border: "none",
+          background: "#465149",
+          color: "#fff",
+          cursor: "pointer",
+          display: "block",
+          width: "100%",
+        }}
+      >
+        Ver detalles
+      </Link>
     </div>
   );
 }
 
 export default MovieCard;
-

@@ -9,87 +9,76 @@ function Lists() {
 
   // Cargar listas al entrar
   useEffect(() => {
-    if (user) {
-      fetch("http://localhost:3000/api/list", { //direccion backend
-        credentials: "include"
-      })
-.then((res) => res.json())
-      .then((data) => {
-        if (data.listas) setLists(data.listas); // si no hay listas, retorna []
-        else setLists(data); // si backend ya devuelve solo array
-      })
-      .catch(() => {
-        // fallback
-        setLists([
-          {
-            id: 1,
-            nombre: "Favoritas",
-            peliculas: [
-              {
-                movieId: 3,
-                titulo: "The Matrix",
-                poster_path:
-                  "https://play-lh.googleusercontent.com/JCgd2EG9UkbJE9n1bWuBwsvwVr81mS7Ad2ve0K35_w10rqOtRlm9OlPAuAENQXVmh3YpHDGJbsKiT5iaqL8",
-              },
-            ],
-          },
-        ]);
-      });
-  }
-}, [user]);
+    if (!user) return;
 
+    const fetchLists = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/list", {
+          credentials: "include",
+        });
+        const data = await res.json();
+        setLists(
+        data.listas.map(l => ({
+          _id: l._id || l.id,
+          nombre: l.nombre || l.name,
+          peliculas: l.peliculas || [],
+        }))
+      );
+      } catch (err) {
+        console.error("Error al cargar listas:", err);
+      }
+    };
+
+    fetchLists();
+  }, [user]);
 
   // Crear nueva lista
   const handleCreateList = async () => {
     if (!newListName.trim()) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/lists", { //fireccion backend
+      const res = await fetch("http://localhost:3000/api/list", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-
-        },
-        body: JSON.stringify({ nombre: newListName, peliculas:[]}),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ nombre: newListName, peliculas: [] }),
       });
 
       if (!res.ok) throw new Error("Error al crear lista");
 
       const data = await res.json();
-      setLists([...lists, data]); // agregar la nueva lista a estado
+      setLists([...lists, data.lista || data]); // agregar al estado
       setNewListName("");
     } catch (err) {
-      console.error("Error al crear la lista", err);
-
-      // fallback local (que funcione sin backend)
-      const newList = { id: Date.now(), name: newListName, movies: [] };
-      setLists([...lists, newList]);
-      setNewListName("");
+      console.error("Error al crear lista:", err);
+      alert(err.message);
     }
   };
 
+  // Agregar película a lista
   const handleAddToList = async (listId, movie) => {
-  try {
-    const res = await fetch(`http://localhost:3000/api/auth/list/${listId}/movies`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ movieId: movie.id }),
-    });
+    try {
+      const res = await fetch(`http://localhost:3000/api/list/${listId}/movies`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ movie }),
+      });
 
-    if (!res.ok) throw new Error("Error al agregar película");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Error al agregar película");
+      }
 
-    // 🔄 refrescar listas desde el backend
-    const updated = await fetch("http://localhost:3000/api/auth/list", {
-      credentials: "include",
-    });
-    const data = await updated.json();
-    setLists(data);
-
-  } catch (err) {
-    console.error("Error al agregar película", err);
-  }
-};
+      const updatedList = await res.json();
+      setLists((prev) =>
+        prev.map((l) => (l._id === updatedList._id ? updatedList : l))
+      );
+    } catch (err) {
+      console.error("Error al agregar película:", err);
+      alert(err.message);
+    }
+  };
 
   if (!user) {
     return (
@@ -122,26 +111,25 @@ function Lists() {
         {lists.length === 0 ? (
           <p>No tienes listas creadas 😢</p>
         ) : (
-          <div>
-            {lists.map((list) => (
-              <div key={list.id} style={{ marginTop: "2rem" }}>
-                <h3>{list.name}</h3>
-                {list.movies.length === 0 ? (
-                  <p>Lista vacía</p>
-                ) : (
-                  <div className="movies-grid">
-                    {list.movies.map((m) => (
-                      <MovieCard 
-                      key={m.id} 
-                      movie={m} 
-                      lists={lists}                 // todas tus listas para el prompt
-                      onAddToList={handleAddToList}/>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          lists.map((list) => (
+            <div key={list._id} style={{ marginTop: "2rem" }}>
+              <h3>{list.nombre}</h3>
+              {list.peliculas.length === 0 ? (
+                <p>Lista vacía</p>
+              ) : (
+                <div className="movies-grid">
+                  {list.peliculas.map((m) => (
+                    <MovieCard
+                      key={m.movieId}
+                      movie={m}
+                      lists={lists}
+                      onAddToList={handleAddToList}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ))
         )}
       </div>
     </div>

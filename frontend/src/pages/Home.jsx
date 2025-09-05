@@ -43,7 +43,13 @@ function Home() {
     const data = await res.json(); // solo leer JSON una vez
     console.log("Listas obtenidas:", data);
 
-    setLists(data.listas || []);
+     setLists(
+        data.listas.map(l => ({
+          _id: l._id || l.id,
+          nombre: l.nombre || l.name,
+          peliculas: l.peliculas || [],
+        }))
+      );
   } catch (err) {
     console.error("Error al obtener listas:", err);
   }
@@ -66,19 +72,17 @@ function Home() {
           body: JSON.stringify({ movie }),
         }
       );
-
-      if (!res.ok) throw new Error("Error al agregar película");
-
-      const updatedList = await res.json();
-
-      // actualizar estado local
-   setLists((prev) =>
-        prev.map((l) => (l._id === updatedList._id ? updatedList : l))
-      );
-    } catch (err) {
-      console.error("Error al agregar película:", err);
+       if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Error al agregar película");
     }
-  };
+    const updatedList = await res.json();
+    setLists((prev) => prev.map((l) => l._id === updatedList._id ? updatedList : l));
+  } catch (err) {
+    console.error("Error al agregar película:", err);
+    alert(err.message);
+  }
+};
 
   return (
     <div className="page-container">
@@ -86,7 +90,7 @@ function Home() {
       <div className="movies-grid">
         {movies.map((m) => (
           <MovieCard
-            key={m.id}
+            key={m.id||m._id}
             movie={m}
             lists={lists}
             onAddToList={handleAddToList}
