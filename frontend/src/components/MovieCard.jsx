@@ -20,7 +20,17 @@ function MovieCard({ movie, lists = [], onAddToList }) {
   };
 
   return (
-    <div style={{ border: "1px solid #444", padding: "0.5rem", borderRadius: "10px", background: "#2c2c2c", color: "#fff", textAlign: "center" }}>
+    <div 
+    style={{ 
+      border: "1px solid #444", 
+      padding: "0.5rem", 
+      borderRadius: "10px", 
+      background: "#2c2c2c", 
+      color: "#fff", 
+      textAlign: "center",
+      display: "flex",
+      flexDirection: "column",
+      }}>
       <img src={movie.poster || movie.poster_path} alt={movie.title} style={{ width: "100%", borderRadius: "8px" }} />
       <h3>{movie.title} ({formattedDate})</h3>
 
@@ -31,7 +41,25 @@ function MovieCard({ movie, lists = [], onAddToList }) {
         </select>
       )}
 
-      <Link to={`/movies/${movie._id || movie.id}`} style={{ marginTop: "0.5rem", padding: "0.4rem 0.8rem", borderRadius: "6px", border: "none", background: "#465149", color: "#fff", display: "block", width: "100%" }}>Ver detalles</Link>
+      <Link 
+      to={`/movies/${movie._id || movie.id}`} 
+      style={{ 
+        marginTop: "0.5rem", 
+        padding: "0.4rem 0.8rem", 
+        borderRadius: "0 0 10px 10px", 
+        border: "none", 
+        background: "#465149", 
+        color: "#fff", 
+        display: "block", 
+        width: "100%",
+        textAlign: "center",
+        alignSelf: "stretch",
+        boxSizing: "border-box"
+      }}
+        
+
+        >
+          Ver detalles</Link>
     </div>
   );
 }
