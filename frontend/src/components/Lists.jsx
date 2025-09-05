@@ -7,7 +7,7 @@ function Lists() {
   const [lists, setLists] = useState([]);
   const [newListName, setNewListName] = useState("");
 
-  // Cargar listas al entrar
+  // Cargar listas del backend
   useEffect(() => {
     if (!user) return;
 
@@ -17,15 +17,19 @@ function Lists() {
           credentials: "include",
         });
         const data = await res.json();
+
         setLists(
-        data.listas.map(l => ({
-          _id: l._id || l.id,
-          nombre: l.nombre || l.name,
-          peliculas: l.peliculas || [],
-        }))
-      );
+          Array.isArray(data.listas)
+            ? data.listas.map(l => ({
+                _id: l._id,
+                nombre: l.nombre,
+                peliculas: Array.isArray(l.peliculas) ? l.peliculas : [],
+              }))
+            : []
+        );
       } catch (err) {
-        console.error("Error al cargar listas:", err);
+        console.error("Error al obtener listas:", err);
+        setLists([]);
       }
     };
 
@@ -39,24 +43,29 @@ function Lists() {
     try {
       const res = await fetch("http://localhost:3000/api/list", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ nombre: newListName, peliculas: [] }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user}`,
+        },
+        body: JSON.stringify({ nombre: newListName }),
       });
-
-      if (!res.ok) throw new Error("Error al crear lista");
-
       const data = await res.json();
-      setLists([...lists, data.lista || data]); // agregar al estado
+      if (!res.ok) throw new Error(data.message || "Error al crear lista");
+
+      setLists(prev => [{ _id: data.lista._id, nombre: data.lista.nombre, peliculas: [] }, ...prev]);
       setNewListName("");
     } catch (err) {
-      console.error("Error al crear lista:", err);
-      alert(err.message);
+      console.error(err.message);
+      const newList = { _id: Date.now(), nombre: newListName, peliculas: [] };
+      setLists(prev => [newList, ...prev]);
+      setNewListName("");
     }
   };
 
   // Agregar película a lista
   const handleAddToList = async (listId, movie) => {
+    if (!user) return;
+
     try {
       const res = await fetch(`http://localhost:3000/api/list/${listId}/movies`, {
         method: "POST",
@@ -65,18 +74,12 @@ function Lists() {
         body: JSON.stringify({ movie }),
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Error al agregar película");
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Error al agregar película");
 
-      const updatedList = await res.json();
-      setLists((prev) =>
-        prev.map((l) => (l._id === updatedList._id ? updatedList : l))
-      );
+      setLists(prev => prev.map(l => (l._id === data._id ? data : l)));
     } catch (err) {
-      console.error("Error al agregar película:", err);
-      alert(err.message);
+      console.error(err.message);
     }
   };
 
@@ -96,32 +99,29 @@ function Lists() {
       <div className="container">
         <h2>Mis Listas</h2>
 
-        {/* Crear nueva lista */}
         <input
           type="text"
           placeholder="Nombre de la nueva lista..."
           value={newListName}
           onChange={(e) => setNewListName(e.target.value)}
         />
-        <button className="btn" onClick={handleCreateList}>
-          Crear
-        </button>
+        <button className="btn" onClick={handleCreateList}>Crear</button>
 
-        {/* Mostrar listas */}
         {lists.length === 0 ? (
           <p>No tienes listas creadas 😢</p>
         ) : (
-          lists.map((list) => (
+          lists.map(list => (
             <div key={list._id} style={{ marginTop: "2rem" }}>
               <h3>{list.nombre}</h3>
+
               {list.peliculas.length === 0 ? (
                 <p>Lista vacía</p>
               ) : (
                 <div className="movies-grid">
-                  {list.peliculas.map((m) => (
+                  {list.peliculas.map(m => (
                     <MovieCard
                       key={m.movieId}
-                      movie={m}
+                      movie={{ id: m.movieId, title: m.titulo, poster: m.poster_path }}
                       lists={lists}
                       onAddToList={handleAddToList}
                     />

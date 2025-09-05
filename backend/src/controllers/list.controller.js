@@ -1,56 +1,44 @@
 import Lista from "../models/list.model.js";
 
-// Publicar una nueva lista
+// Crear lista
 export const createList = async (req, res) => {
-  const { nombre, peliculas } = req.body
-  const usuarioId = req.user.id // Tomamos su JWT
+  const { nombre, peliculas } = req.body;
+  const usuarioId = req.user.id;
   try {
-    if(!nombre) { 
-        return res.status(400).json({ message: "El nombre de la lista es requerido" })
+    if (!nombre) return res.status(400).json({ message: "El nombre de la lista es requerido" });
+
+    const idsUnicos = new Set((peliculas || []).map(p => p.movieId));
+    if (peliculas && idsUnicos.size !== peliculas.length) {
+      return res.status(400).json({ message: "No se permiten películas duplicadas en la lista" });
     }
 
-    // Validacón de duplicados en base a la creación de un arreglo con ids unicos
-    const idsUnicos = new Set( peliculas.map(p => p.movieId));
-    if (idsUnicos.size !== peliculas.length){ 
-        return res.status(400).json({ message: "No se permiten películas duplicadas en la lista" })
-    }
-    
-    // Creacón de lista
-    const nuevaLista = new Lista({ nombre, peliculas, usuarioId })
-    await nuevaLista.save()
-    res.status(201).json({ message: "Lista creada con éxito", lista: nuevaLista })
-    } catch (error) {
-
-        // 11000 es el código de error que MongoDB lanza cuando hay un duplicado 
-        // en un campo que debería ser único.
-        if (error.code === 11000){
-            return res.status(400).json({ message: "Ya tienes una lista con ese nombre" })
-        }
-
-       res.status(500).json({message: error.message})
+    const nuevaLista = new Lista({ nombre, peliculas: peliculas || [], usuarioId });
+    await nuevaLista.save();
+    res.status(201).json({ message: "Lista creada con éxito", lista: nuevaLista });
+  } catch (error) {
+    if (error.code === 11000) return res.status(400).json({ message: "Ya tienes una lista con ese nombre" });
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
-// Obtener todas las listas con el usuario autenticado
+// Obtener listas del usuario
 export const getUserLists = async (req, res) => {
   const usuarioId = req.user.id;
   try {
     const listas = await Lista.find({ usuarioId }).sort({ createdAt: -1 });
-
-    // Siempre devolvemos un objeto con la propiedad 'listas'
     res.json({ listas: listas || [] });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Agregar película a lista
 export const addMovieToList = async (req, res) => {
   const { listId } = req.params;
   const { movie } = req.body;
   const usuarioId = req.user.id;
 
-  if (!movie || !movie.id) {
-    return res.status(400).json({ message: "Datos de película incompletos" });
-  }
+  if (!movie || !movie.id) return res.status(400).json({ message: "Datos de película incompletos" });
 
   try {
     const lista = await Lista.findOne({ _id: listId, usuarioId });
@@ -61,13 +49,13 @@ export const addMovieToList = async (req, res) => {
 
     lista.peliculas.push({
       movieId: movie.id.toString(),
-      titulo: movie.title || movie.titulo,
-      poster_path: movie.poster_path || movie.poster,
+      titulo: movie.title,
+      poster_path: movie.poster_path
     });
 
     await lista.save();
-    return res.json(lista); // <-- Muy importante, siempre devolver JSON
+    res.json(lista);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

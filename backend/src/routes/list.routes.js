@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createList, getUserLists } from "../controllers/list.controller.js";
+import { createList, getUserLists, addMovieToList } from "../controllers/list.controller.js";
 import { authRequired } from "../middlewares/validateToken.js";
 
 const router = Router();
@@ -11,7 +11,7 @@ router.post("/", authRequired, createList);
 // obtener listas del usuario
 router.get("/", authRequired, getUserLists);
 
-
+router.post("/:listId/movies", authRequired, addMovieToList);
 /* Para verificar en Thunder client: 
     Para agregar una reseña se debe de estar el usuario registrado
     y en el estado login: 
