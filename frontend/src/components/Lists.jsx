@@ -46,8 +46,8 @@ function Lists() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user}`,
         },
+        credentials:"include",
         body: JSON.stringify({ nombre: newListName }),
       });
       const data = await res.json();
