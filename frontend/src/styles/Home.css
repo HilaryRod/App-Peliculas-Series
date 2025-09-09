@@ -1,9 +1,10 @@
 /* Home.css */
 .page-container {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-top: 350px;
+  padding: 0; /* altura del navbar + margen, top = navbar altura + 20px de espacio  80px 2rem 2rem 2rem*/
+  /*max-width: 1200px;
+  margin: 0 auto;*/
+  padding-bottom: 2rem; /* opcional */
+
 }
 
 .page-container h2 {
@@ -24,23 +25,58 @@
 /* Estilos responsivos */
 @media (max-width: 768px) {
   .page-container {
-    padding: 1rem;
+    padding: 70px 1rem 1rem 1rem;
   }
   
   .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1.5rem;
   }
+
+  .movie-card .poster {
+    height: 300px;
+  }
+
+  .movie-card .info {
+    padding: 1rem;
+  }
+
+  .movie-card .info h3 {
+    font-size: 1.2rem;
+  }
+  .movie-card .poster {
+    height: 300px;
+  }
+
+  .movie-card .info {
+    padding: 1rem;
+  }
+
+  .movie-card .info h3 {
+    font-size: 1.2rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .page-container {
+    padding: 60px 1rem 1rem 1rem;
+  }
+
   .page-container h2 {
     font-size: 2rem;
   }
-  
+
   .movies-grid {
     grid-template-columns: 1fr;
     max-width: 300px;
     margin: 0 auto;
+  }
+
+  .movie-card .poster {
+    height: 250px;
+  }
+
+  .movie-card .info h3 {
+    font-size: 1.1rem;
   }
 }

@@ -1,12 +1,20 @@
-#root {
-  max-width: 1280px;
+html, body, #root {
+  /*max-width: 1280px;*/
+  height: 100%;
   margin: 0 auto;
   padding: 0;
-  text-align: center;
+  /*text-align: center;*/
 }
 main {
-  margin-top: 80px; /* igual o mayor al alto de tu navbar */
-  padding: 2rem;
+/*margin-top: 80px;  igual o mayor al alto de tu navbar 
+  padding: 2rem; */
+  padding-top: calc(80px + 20px + 70px); /* exactamente la altura del navbar 170px*/
+  padding-left: 2rem;
+  padding-right: 2rem;
+  box-sizing: border-box;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .logo {

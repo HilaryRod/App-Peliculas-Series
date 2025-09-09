@@ -2,9 +2,12 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import logo from "../assets/logo.png";
-import "./style.css";
+import "../styles/style.css";
+import { registerRequest } from "../api/auth"; 
+import { useAuth } from "../context/AuthContext";
 
 function Register() {
+  const {setUser}=useAuth();
   const {
     register,
     handleSubmit,
@@ -22,20 +25,20 @@ function Register() {
       setApiError("");
       setApiSuccess("");
       //endpoint
-      const response = await fetch("http://localhost:3000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      const res = await registerRequest({
+        username: data.nombre, 
+        email: data.email,
+        password: data.password,
       });
 
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Error en el registro ❌");
+      setUser(res.data);
 
-      setApiSuccess("✅ Usuario registrado, redirigiendo...");
-      reset();//Para limpiar formulario
-      setTimeout(() => navigate("/login"), 1500);
+      setApiSuccess("Usuario registrado, redirigiendo...");
+      reset();
+      setTimeout(() => navigate("/home"), 1500);
     } catch (error) {
-      setApiError(error.message || "No se pudo conectar al servidor 🚨");
+      console.log("Error register:", error.response?.data || error);
+      setApiError(error.response?.data?.message || "No se pudo registrar 🚨");
     }
   };
 
@@ -75,7 +78,7 @@ function Register() {
               message: "Debe tener al menos 6 caracteres",
             },
             pattern: {
-              value: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+              value: /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/, //se actualizo el regex para permitir todos los simbolos 
               message: "Debe incluir mayúscula, número y símbolo",
             },
           })}

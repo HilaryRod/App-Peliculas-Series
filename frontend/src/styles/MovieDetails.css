@@ -1,0 +1,103 @@
+.movie-details {
+  background: #525D53; /* verde musgo */
+  padding: 2rem;
+  border-radius: 15px;
+  max-width: 800px;
+  width: 90%;
+  margin: 2rem auto;
+  box-shadow: 0 0 25px rgba(0,0,0,0.4);
+  color: #fff;
+  font-size: 1.1rem; 
+  line-height: 1.6;
+}
+
+.movie-poster {
+  width: 200px;
+  border-radius: 12px;
+  display: block;       /* lo convierte en bloque */
+  margin: 0 auto 1rem;  /* lo centra horizontalmente */
+}
+
+.movie-details img {
+  width: 200px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.movie-details h2 {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+  color: #fff;
+}
+
+.movie-details p {
+  font-size: 1.1rem;
+  color: #ddd;
+  line-height: 1.5;
+}
+
+.movie-details strong {
+  color: #F6A9A1; /* acento rosado */
+}
+
+.rating-summary {
+  margin: 1rem 0;
+  font-size: 1.1rem;
+  color: #FFD700; /* dorado para estrellas */
+}
+
+.review-form {
+  margin-top: 1.5rem;
+  background: #465149; /* verde oscuro */
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.review-form textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  border: 1px solid #879C90;
+  border-radius: 8px;
+  background: #525D53;
+  color: #fff;
+  resize: none;
+}
+
+.review-form textarea::placeholder {
+  color: #BFBFBF;
+}
+
+.review-form .btn {
+  width: auto;
+  padding: 0.7rem 1.5rem;
+}
+
+.reviews-section {
+  margin-top: 2rem;
+}
+
+.reviews-section h4 {
+  margin-bottom: 0.8rem;
+  color: #fff;
+}
+
+.review-card {
+  background: #465149;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #879C90;
+}
+
+.review-card strong {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.review-card p {
+  color: #ddd;
+  margin: 0;
+}

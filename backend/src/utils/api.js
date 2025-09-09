@@ -1,13 +1,18 @@
+import 'dotenv/config';
 import axios from "axios";
 
-/*
-  Ejemplo de función para obtener películas de la API externa.
-  Esta función solo sirve como demostración de cómo se puede
-  integrar la API usando la API_KEY y axios. La lógica final
-  se desarrollará y ajustará según las necesidades del proyecto.
-*/
+export const tmdb = axios.create({
+  baseURL: "https://api.themoviedb.org/3", 
+  params: {api_key: process.env.TMDB_API_KEY},
+});
+
+// URL de imágenes
+export const posterUrl = (path, size = "w500") => {
+  return path ? `https://image.tmdb.org/t/p/${size}${path}` : null;
+}
+
 
 export const fetchMovies = async () => {
-  const res = await axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.API_KEY}`);
-  return res.data.results;
+  const {data} = await tmdb.get("/trending/all/week");
+  return data.results;
 };

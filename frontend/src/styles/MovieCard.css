@@ -3,6 +3,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   display: flex;
@@ -11,8 +12,9 @@
 }
 
 .movie-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.02);
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  z-index: 1;
 }
 
 .movie-card .poster {
