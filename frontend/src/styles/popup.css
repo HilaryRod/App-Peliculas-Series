@@ -1,0 +1,75 @@
+/* Fondo del overlay */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* por encima de todo */
+  transition: opacity 0.3s ease;
+}
+
+/* Oculto por defecto */
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Caja del popup */
+.popup {
+  background: #1e1e1e; /* combina con tu estilo oscuro */
+  color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  animation: fadeInUp 0.3s ease;
+}
+
+/* Título */
+.popup h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Mensaje */
+.popup p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Botón */
+.popup button {
+  background: #646cff;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.popup button:hover {
+  background: #4e56d4;
+}
+
+/* Animación */
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

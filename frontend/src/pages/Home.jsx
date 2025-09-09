@@ -2,11 +2,17 @@ import { useState, useEffect } from "react";
 import MovieCard from "../components/MovieCard";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Home.css";
+import Popup from "../components/popup";  
 
 function Home() {
   const { user } = useAuth(); 
   const [movies, setMovies] = useState([]);
   const [lists, setLists] = useState([]); // listas del usuario
+  const [popup, setPopup] = useState({ isOpen: false, title: "", message: "" }); 
+
+    const showPopup = (title, message) => {
+    setPopup({ isOpen: true, title, message });
+  };
 
   // Cargar películas populares siempre
   useEffect(() => {
@@ -21,6 +27,7 @@ function Home() {
         setMovies(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error al obtener películas:", error);
+        showPopup("Error ❌", "No se pudieron cargar las películas.");
       }
     };
 
@@ -69,8 +76,11 @@ function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Error al agregar película");
       setLists(prev => prev.map(l => (l._id === data._id ? data : l)));
+      showPopup("Éxito ✅", "Película agregada a la lista.");
+
     } catch (err) {
-      alert(err.message);
+      console.error(err.message);
+      showPopup("Error ❌", err.message);
     }
   };
 
@@ -101,6 +111,14 @@ function Home() {
           ⚠️ Inicia sesión para poder agregar películas a tus listas o dejar reseñas.
         </p>
       )}
+
+    {/* Popup global */}
+      <Popup
+        title={popup.title}
+        message={popup.message}
+        isOpen={popup.isOpen}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+      />
     </div>
   );
 }

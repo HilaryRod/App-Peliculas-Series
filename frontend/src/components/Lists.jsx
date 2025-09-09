@@ -2,11 +2,18 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import MovieCard from "../components/MovieCard";
 import "../styles/Listas.css"
+import Popup from "../components/popup"; 
 
 function Lists() {
   const { user } = useAuth();
   const [lists, setLists] = useState([]);
   const [newListName, setNewListName] = useState("");
+  const [popup, setPopup] = useState({ isOpen: false, title: "", message: "" }); 
+
+  //mostrar popup
+  const showPopup = (title, message) => {
+    setPopup({ isOpen: true, title, message });
+  };
 
   // Cargar listas del backend
   useEffect(() => {
@@ -55,8 +62,11 @@ function Lists() {
 
       setLists(prev => [{ _id: data.lista._id, nombre: data.lista.nombre, peliculas: [] }, ...prev]);
       setNewListName("");
+      showPopup("Éxito ✅", "Lista creada correctamente.");
+
     } catch (err) {
       console.error(err.message);
+      showPopup("Error ❌", err.message);
       const newList = { _id: Date.now(), nombre: newListName, peliculas: [] };
       setLists(prev => [newList, ...prev]);
       setNewListName("");
@@ -79,8 +89,11 @@ function Lists() {
       if (!res.ok) throw new Error(data.message || "Error al agregar película");
 
       setLists(prev => prev.map(l => (l._id === data._id ? data : l)));
+      showPopup("Éxito ✅", "Película agregada a la lista.");
+      
     } catch (err) {
       console.error(err.message);
+      showPopup("Error ❌", err.message);
     }
   };
 
@@ -133,6 +146,13 @@ function Lists() {
           ))
         )}
       </div>
+      {/* Popup global */}
+      <Popup
+        title={popup.title}
+        message={popup.message}
+        isOpen={popup.isOpen}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+      />
     </div>
   );
 }
