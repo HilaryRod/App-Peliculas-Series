@@ -17,7 +17,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cors({
-  origin: "http://localhost:5173", // tu frontend
+  origin: 'https://app-peliculas-series.vercel.app', // tu frontend
   credentials: true
 }))
 app.use(cookieParser()) 
@@ -35,6 +35,4 @@ mongoose.connect(process.env.MONGODB_KEY)
   .then (() => console.log("Conectado a MongoDB"))
   .catch(err => console.error("Error al conectar a MongoDB:", err))
 
-app.listen(PORT, () => {
-  console.log("Servidor corriendo en el puerto", PORT);
-})
+export default app;
