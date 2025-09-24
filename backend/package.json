@@ -3,16 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "type": "module"
+    "dev": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
